@@ -1,0 +1,17 @@
+export const IMAGES = {
+  leftArrow: require("./leftArrow"),
+  rightArrow: require("./rightArrow"),
+  rightArrowFade: require("./rightArrowFade"),
+  clothingCircle: require("./clothingCircle"),
+  clothing: require("./clothing"),
+  foodCircle: require("./foodCircle"),
+  shopping: require("./shopping"),
+  healthCircle: require("./healthCircle"),
+  health: require("./health"),
+  food: require("./food"),
+  housingCircle: require("./housingCircle"),
+  housing: require("./housing"),
+  beautyCircle: require("./beautyCircle"),
+  beauty: require("./beauty"),
+  back: require("./back"),
+};
