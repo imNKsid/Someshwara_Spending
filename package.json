@@ -12,12 +12,18 @@
     "aclean": "cd android && ./gradlew clean && cd ..",
     "apk": "cd android && ./gradlew clean && ./gradlew assembleRelease && cd ..",
     "uninstallAndroid": "cd android && ./gradlew clean && ./gradlew uninstallAll && cd ..",
-    "iOSpodInstall": "cd ios && pod install"
+    "iOSpodInstall": "cd ios && pod install",
+    "postinstall": "patch-package"
   },
   "dependencies": {
+    "patch-package": "^8.0.0",
+    "postinstall-postinstall": "^2.1.0",
     "react": "18.2.0",
     "react-native": "0.73.6",
-    "react-native-rename": "^3.2.14"
+    "react-native-rename": "^3.2.14",
+    "react-native-segmented-round-display": "^1.0.0",
+    "react-native-svg": "^14.1.0",
+    "react-native-svg-charts": "^5.4.0"
   },
   "devDependencies": {
     "@babel/core": "^7.20.0",
