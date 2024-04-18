@@ -1,6 +1,7 @@
 export const COLORS = {
   bgColor: "#F1F0F5",
   black: "#1D1D2C",
+  white: "#FFF",
   green: "#35C937",
   yellow: "#DABB4F",
   darkBlue: "#5281AC",
