@@ -1,10 +1,18 @@
-import { Image, StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import {
+  Image,
+  Platform,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+} from "react-native";
 import React, { useState } from "react";
 import { COLORS } from "../constants";
 import { IMAGES } from "../assets/images";
 import SegmentedRoundDisplay from "react-native-segmented-round-display";
 import { AllCategories } from "../components";
 import { useNavigation } from "@react-navigation/native";
+import SpendSelector from "../redux/ducks/spend/spend-selector";
 
 const monthNames = [
   "January",
@@ -23,6 +31,9 @@ const monthNames = [
 
 const Dashboard = () => {
   const navigation: any = useNavigation();
+
+  const totalBudget = SpendSelector.spendingBudget();
+  const totalSpent = SpendSelector.totalSpent();
 
   const [selectedMonthIndex, setSelectedMonthIndex] = useState(
     new Date().getMonth()
@@ -48,6 +59,10 @@ const Dashboard = () => {
       : new Date().getFullYear();
 
   const selectedMonth = monthNames[selectedMonthIndex];
+
+  console.log("totalSpent =>", totalSpent);
+
+  const percentage = ((totalSpent / totalBudget) * 100).toFixed();
 
   return (
     <View style={styles.container}>
@@ -86,8 +101,8 @@ const Dashboard = () => {
                 <SegmentedRoundDisplay
                   segments={[
                     {
-                      total: 100,
-                      filled: 98,
+                      total: (totalBudget / totalBudget) * 100,
+                      filled: (totalSpent / totalBudget) * 100,
                     },
                   ]}
                   totalArcSize={180}
@@ -99,18 +114,18 @@ const Dashboard = () => {
                 />
               </View>
               <View style={styles.numNspendings}>
-                <Text style={styles.percent}>50%</Text>
+                <Text style={styles.percent}>{`${percentage}%`}</Text>
                 <Text style={styles.totalText}>Total Spendings</Text>
               </View>
               <View style={styles.endsText}>
                 <View style={styles.spendLimit}>
                   <Text style={styles.spentText}>Spending Limit</Text>
-                  <Text style={styles.priceText}>Price</Text>
+                  <Text style={styles.priceText}>{`AED ${totalBudget}`}</Text>
                 </View>
                 <View style={styles.divider} />
                 <View style={[styles.spendLimit, styles.amountSpent]}>
                   <Text style={styles.spentText}>Amount Spent</Text>
-                  <Text style={styles.priceText}>Price</Text>
+                  <Text style={styles.priceText}>{`AED ${totalSpent}`}</Text>
                 </View>
               </View>
               <AllCategories />
@@ -171,7 +186,7 @@ const styles = StyleSheet.create({
     backgroundColor: COLORS.bgColor,
   },
   mainContent: {
-    marginVertical: 80,
+    marginVertical: Platform.OS === "ios" ? 80 : 30,
     marginHorizontal: 20,
   },
   textContainer: {

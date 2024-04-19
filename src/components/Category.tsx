@@ -2,13 +2,19 @@ import { ImageBackground, Image, StyleSheet, Text, View } from "react-native";
 import React from "react";
 import { ProgressCircle } from "react-native-svg-charts";
 
-const Category = ({ circleImg, categoryImg, barColor, text }: any) => {
+const Category = ({
+  progress,
+  circleImg,
+  categoryImg,
+  barColor,
+  text,
+}: any) => {
   return (
     <View style={styles.iconNname}>
       <View style={styles.progressBar}>
         <ProgressCircle
           style={{ height: 60, top: -10 }}
-          progress={0.3}
+          progress={progress}
           progressColor={barColor}
           startAngle={0}
           endAngle={Math.PI * 2}

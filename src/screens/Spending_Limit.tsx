@@ -1,21 +1,37 @@
-import { Image, StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import {
+  Image,
+  Platform,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+} from "react-native";
 import React, { useEffect, useState } from "react";
 import { IMAGES } from "../assets/images";
 import { COLORS } from "../constants";
 import { CategoryItem } from "../components";
 import { useNavigation } from "@react-navigation/native";
-
-const categoriesData = [
-  { title: "Groceries", price: 2000 },
-  { title: "Clothing", price: 1500 },
-  { title: "Beauty", price: 1000 },
-  { title: "Health & Fitness", price: 2500 },
-  { title: "Food", price: 3000 },
-  { title: "Housing", price: 1500 },
-];
+import SpendSelector from "../redux/ducks/spend/spend-selector";
 
 const SpendingLimit = () => {
   const navigation = useNavigation();
+
+  const totalSpent = SpendSelector.totalSpent();
+  const clothSpent = SpendSelector.clothSpent();
+  const grocerySpent = SpendSelector.grocerySpent();
+  const healthSpent = SpendSelector.healthSpent();
+  const foodSpent = SpendSelector.foodSpent();
+  const houseSpent = SpendSelector.houseSpent();
+  const beautySpent = SpendSelector.beautySpent();
+
+  const categoriesData = [
+    { title: "Groceries", price: grocerySpent },
+    { title: "Clothing", price: clothSpent },
+    { title: "Beauty", price: beautySpent },
+    { title: "Health & Fitness", price: healthSpent },
+    { title: "Food", price: foodSpent },
+    { title: "Housing", price: houseSpent },
+  ];
 
   const [categories, setCategories] = useState(categoriesData);
   const [totalSpend, setTotalSpend] = useState(0);
@@ -27,6 +43,10 @@ const SpendingLimit = () => {
 
     setTotalSpend(totalPrice);
   }, [categories]);
+
+  useEffect(() => {
+    setTotalSpend(totalSpent);
+  }, [totalSpent]);
 
   const handleBack = () => {
     navigation.goBack();
@@ -67,13 +87,13 @@ const styles = StyleSheet.create({
   },
   topSection: {
     backgroundColor: COLORS.white,
-    paddingTop: 60,
+    paddingTop: Platform.OS === "ios" ? 60 : 20,
     paddingLeft: 20,
     borderBottomLeftRadius: 20,
     borderBottomRightRadius: 20,
   },
   arrowIcon: { width: 25, height: 25 },
-  heading: { marginTop: 20 },
-  totalAmt: { fontSize: 30, marginBottom: 20 },
+  heading: { marginTop: Platform.OS === "ios" ? 20 : 10, color: COLORS.black },
+  totalAmt: { fontSize: 30, marginBottom: 20, color: COLORS.black },
   bottomSection: { marginVertical: 10, marginHorizontal: 20 },
 });
