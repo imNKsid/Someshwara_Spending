@@ -14,4 +14,6 @@ export const IMAGES = {
   beautyCircle: require("./beautyCircle.png"),
   beauty: require("./beauty.png"),
   back: require("./back.png"),
+  noData: require("./noData.png"),
+  edit: require("./edit.png"),
 };
