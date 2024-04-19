@@ -4,6 +4,7 @@ import { COLORS } from "../constants";
 import { IMAGES } from "../assets/images";
 import SegmentedRoundDisplay from "react-native-segmented-round-display";
 import { AllCategories } from "../components";
+import { useNavigation } from "@react-navigation/native";
 
 const monthNames = [
   "January",
@@ -21,9 +22,15 @@ const monthNames = [
 ];
 
 const Dashboard = () => {
+  const navigation: any = useNavigation();
+
   const [selectedMonthIndex, setSelectedMonthIndex] = useState(
     new Date().getMonth()
   );
+
+  const handleEdit = () => {
+    navigation.navigate("SpendingLimit");
+  };
 
   const handleNextMonth = () => {
     setSelectedMonthIndex((prevIndex) => (prevIndex + 1) % monthNames.length);
@@ -52,7 +59,11 @@ const Dashboard = () => {
         <View style={styles.summaryContainer}>
           <View style={styles.textContainer}>
             <Text>Spending summary</Text>
-            <Text style={styles.editText}>Edit</Text>
+            {selectedMonthIndex === new Date().getMonth() ? (
+              <TouchableOpacity onPress={handleEdit}>
+                <Text style={styles.editText}>Edit</Text>
+              </TouchableOpacity>
+            ) : null}
           </View>
           <View style={[styles.calendar, styles.textContainer]}>
             <TouchableOpacity onPress={handlePreviousMonth}>

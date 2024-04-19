@@ -1,8 +1,9 @@
-import { Image, StyleSheet, Text, View } from "react-native";
+import { Image, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import React, { useEffect, useState } from "react";
 import { IMAGES } from "../assets/images";
 import { COLORS } from "../constants";
 import { CategoryItem } from "../components";
+import { useNavigation } from "@react-navigation/native";
 
 const categoriesData = [
   { title: "Groceries", price: 2000 },
@@ -14,6 +15,8 @@ const categoriesData = [
 ];
 
 const SpendingLimit = () => {
+  const navigation = useNavigation();
+
   const [categories, setCategories] = useState(categoriesData);
   const [totalSpend, setTotalSpend] = useState(0);
 
@@ -25,10 +28,16 @@ const SpendingLimit = () => {
     setTotalSpend(totalPrice);
   }, [categories]);
 
+  const handleBack = () => {
+    navigation.goBack();
+  };
+
   return (
     <View style={styles.container}>
       <View style={styles.topSection}>
-        <Image source={IMAGES.back} style={styles.arrowIcon} />
+        <TouchableOpacity onPress={handleBack}>
+          <Image source={IMAGES.back} style={styles.arrowIcon} />
+        </TouchableOpacity>
         <Text style={styles.heading}>Total Spending Limit</Text>
         <Text style={styles.totalAmt}>AED {totalSpend}</Text>
       </View>
