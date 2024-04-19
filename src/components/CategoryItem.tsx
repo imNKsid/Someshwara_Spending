@@ -5,6 +5,8 @@ import { IMAGES } from "../assets/images";
 import HorizontalProgressBar from "./HorizontalProgressBar";
 import PriceChangeModal from "./PriceChangeModal";
 import { COLORS } from "../constants";
+import { dispatch } from "../redux/store/store";
+import SpendThunk from "../redux/ducks/spend/spend-thunk";
 
 type CategoryItemDataType = {
   category: {
@@ -22,6 +24,7 @@ const CategoryItem = ({ category, updateCategory }: CategoryItemDataType) => {
   const handlePriceChange = (val: number) => {
     setShowModal(false);
     updateCategory(val);
+    dispatch<any>(SpendThunk.changeSpent({ title: title, price: val }));
   };
 
   return (
@@ -74,6 +77,6 @@ const styles = StyleSheet.create({
     height: 20,
     // alignSelf: "center",
   },
-  text: { fontSize: 16, marginLeft: 5 },
+  text: { fontSize: 16, marginLeft: 5, color: COLORS.black },
   editIcon: { width: 25, height: 25, marginLeft: 5 },
 });
