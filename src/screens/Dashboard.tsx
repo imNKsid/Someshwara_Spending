@@ -1,11 +1,47 @@
-import { Image, StyleSheet, Text, View } from "react-native";
-import React from "react";
+import { Image, StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import React, { useState } from "react";
 import { COLORS } from "../constants";
 import { IMAGES } from "../assets/images";
 import SegmentedRoundDisplay from "react-native-segmented-round-display";
 import { AllCategories } from "../components";
 
+const monthNames = [
+  "January",
+  "February",
+  "March",
+  "April",
+  "May",
+  "June",
+  "July",
+  "August",
+  "September",
+  "October",
+  "November",
+  "December",
+];
+
 const Dashboard = () => {
+  const [selectedMonthIndex, setSelectedMonthIndex] = useState(
+    new Date().getMonth()
+  );
+
+  const handleNextMonth = () => {
+    setSelectedMonthIndex((prevIndex) => (prevIndex + 1) % monthNames.length);
+  };
+
+  const handlePreviousMonth = () => {
+    const newMonthIndex =
+      (selectedMonthIndex - 1 + monthNames.length) % monthNames.length;
+    setSelectedMonthIndex(newMonthIndex);
+  };
+
+  const currentYear =
+    selectedMonthIndex > new Date().getMonth()
+      ? new Date().getFullYear() - 1
+      : new Date().getFullYear();
+
+  const selectedMonth = monthNames[selectedMonthIndex];
+
   return (
     <View style={styles.container}>
       <View style={styles.mainContent}>
@@ -19,44 +55,97 @@ const Dashboard = () => {
             <Text style={styles.editText}>Edit</Text>
           </View>
           <View style={[styles.calendar, styles.textContainer]}>
-            <Image source={IMAGES.leftArrow} style={styles.arrowIcon} />
-            <Text style={styles.editText}>Edit</Text>
-            <Image source={IMAGES.rightArrow} style={styles.arrowIcon} />
+            <TouchableOpacity onPress={handlePreviousMonth}>
+              <Image source={IMAGES.leftArrow} style={styles.arrowIcon} />
+            </TouchableOpacity>
+            <Text style={styles.editText}>
+              {selectedMonth} {currentYear}
+            </Text>
+            {selectedMonthIndex === new Date().getMonth() ? (
+              <Image source={IMAGES.rightArrowFade} style={styles.arrowIcon} />
+            ) : (
+              <TouchableOpacity onPress={handleNextMonth}>
+                <Image source={IMAGES.rightArrow} style={styles.arrowIcon} />
+              </TouchableOpacity>
+            )}
           </View>
-          <View style={{ transform: [{ scaleX: -1 }] }}>
-            <SegmentedRoundDisplay
-              segments={[
-                {
-                  total: 100,
-                  filled: 98,
-                },
-              ]}
-              totalArcSize={180}
-              radius={140}
-              emptyArcColor={COLORS.bgColor}
-              incompleteArcColor={COLORS.green}
-              filledArcWidth={10}
-              emptyArcWidth={10}
-            />
-          </View>
-          <View style={styles.numNspendings}>
-            <Text style={styles.percent}>50%</Text>
-            <Text style={styles.totalText}>Total Spendings</Text>
-          </View>
-          <View style={styles.endsText}>
-            <View style={styles.spendLimit}>
-              <Text style={styles.spentText}>Spending Limit</Text>
-              <Text style={styles.priceText}>Price</Text>
+          {selectedMonthIndex === new Date().getMonth() ? (
+            <View>
+              <View style={{ transform: [{ scaleX: -1 }] }}>
+                <SegmentedRoundDisplay
+                  segments={[
+                    {
+                      total: 100,
+                      filled: 98,
+                    },
+                  ]}
+                  totalArcSize={180}
+                  radius={140}
+                  emptyArcColor={COLORS.bgColor}
+                  incompleteArcColor={COLORS.green}
+                  filledArcWidth={10}
+                  emptyArcWidth={10}
+                />
+              </View>
+              <View style={styles.numNspendings}>
+                <Text style={styles.percent}>50%</Text>
+                <Text style={styles.totalText}>Total Spendings</Text>
+              </View>
+              <View style={styles.endsText}>
+                <View style={styles.spendLimit}>
+                  <Text style={styles.spentText}>Spending Limit</Text>
+                  <Text style={styles.priceText}>Price</Text>
+                </View>
+                <View style={styles.divider} />
+                <View style={[styles.spendLimit, styles.amountSpent]}>
+                  <Text style={styles.spentText}>Amount Spent</Text>
+                  <Text style={styles.priceText}>Price</Text>
+                </View>
+              </View>
+              <AllCategories />
             </View>
-            <View style={styles.divider} />
-            <View style={[styles.spendLimit, styles.amountSpent]}>
-              <Text style={styles.spentText}>Amount Spent</Text>
-              <Text style={styles.priceText}>Price</Text>
+          ) : (
+            <View>
+              <SegmentedRoundDisplay
+                segments={[
+                  {
+                    total: 100,
+                    filled: 0,
+                  },
+                ]}
+                totalArcSize={180}
+                radius={140}
+                emptyArcColor={COLORS.bgColor}
+                incompleteArcColor={COLORS.green}
+                filledArcWidth={10}
+                emptyArcWidth={10}
+              />
+              <View style={styles.numNspendings}>
+                <Text style={styles.percent}>0%</Text>
+                <Text style={styles.totalText}>Total Spendings</Text>
+              </View>
+              <View style={styles.endsText}>
+                <View style={styles.spendLimit}>
+                  <Text style={styles.spentText}>Spending Limit</Text>
+                  <Text style={styles.priceText}>AED 0</Text>
+                </View>
+                <View style={styles.divider} />
+                <View style={[styles.spendLimit, styles.amountSpent]}>
+                  <Text style={styles.spentText}>Amount Spent</Text>
+                  <Text style={styles.priceText}>AED 0</Text>
+                </View>
+              </View>
+              <View style={styles.noDataContainer}>
+                <Image source={IMAGES.noData} style={styles.noDataIcon} />
+                <Text style={[styles.totalText, styles.noDataText]}>
+                  No Data to show
+                </Text>
+                <Text style={[styles.spentText, styles.descText]}>
+                  It seems like you didn’t set spending limits for this month
+                </Text>
+              </View>
             </View>
-          </View>
-          <View>
-            <AllCategories />
-          </View>
+          )}
         </View>
       </View>
     </View>
@@ -77,6 +166,7 @@ const styles = StyleSheet.create({
   textContainer: {
     flexDirection: "row",
     justifyContent: "space-between",
+    alignItems: "center",
   },
   logoutText: { marginRight: 10 },
   summaryContainer: {
@@ -91,15 +181,15 @@ const styles = StyleSheet.create({
   arrowIcon: { width: 25, height: 25 },
   numNspendings: {
     position: "absolute",
-    top: 180,
+    top: 100,
     alignItems: "center",
-    left: 135,
+    left: 115,
   },
   percent: { fontSize: 30 },
   totalText: { fontSize: 18 },
   endsText: {
     position: "absolute",
-    top: 270,
+    top: 195,
     flexDirection: "row",
     width: "100%",
     justifyContent: "center",
@@ -113,5 +203,21 @@ const styles = StyleSheet.create({
     height: 30,
     backgroundColor: COLORS.bgColor,
     marginHorizontal: 70,
+  },
+  noDataContainer: {
+    marginTop: -120,
+    alignItems: "center",
+    marginBottom: 10,
+  },
+  noDataIcon: {
+    width: 100,
+    height: 100,
+  },
+  noDataText: { fontSize: 22 },
+  descText: {
+    fontSize: 16,
+    fontWeight: "300",
+    textAlign: "center",
+    marginHorizontal: 10,
   },
 });
