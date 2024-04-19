@@ -1,4 +1,4 @@
-import { StyleSheet, Text, View } from "react-native";
+import { Platform, StyleSheet, Text, View } from "react-native";
 import React from "react";
 import { getProgressBarColor, getProgressBarFilledColor } from "../utils/utils";
 import { COLORS } from "../constants";
@@ -94,5 +94,9 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     marginTop: 5,
   },
-  limitText: { fontSize: 12, fontWeight: "200", marginHorizontal: 15 },
+  limitText: {
+    fontSize: 12,
+    fontWeight: Platform.OS === "ios" ? "200" : "300",
+    marginHorizontal: 15,
+  },
 });

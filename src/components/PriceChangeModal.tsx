@@ -1,4 +1,12 @@
-import { Button, Modal, StyleSheet, Text, TextInput, View } from "react-native";
+import {
+  Button,
+  Modal,
+  Platform,
+  StyleSheet,
+  Text,
+  TextInput,
+  View,
+} from "react-native";
 import React, { useState } from "react";
 import { COLORS } from "../constants";
 
@@ -64,5 +72,5 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     marginTop: 10,
   },
-  btnView: {},
+  btnView: { marginTop: Platform.OS === "ios" ? 0 : 10 },
 });
