@@ -1,18 +1,59 @@
 diff --git a/node_modules/react-native-segmented-round-display/index.js b/node_modules/react-native-segmented-round-display/index.js
-index 291f9b3..d0da1b3 100644
+index 291f9b3..63fdc4b 100644
 --- a/node_modules/react-native-segmented-round-display/index.js
 +++ b/node_modules/react-native-segmented-round-display/index.js
-@@ -106,7 +106,7 @@ var SegmentedRoundDisplay = function SegmentedRoundDisplay(_ref) {
-         newArc.end += arcSpacing * index;
-       }
+@@ -148,6 +148,28 @@ var SegmentedRoundDisplay = function SegmentedRoundDisplay(_ref) {
+     }, formatedValue));
+   };
  
--      newArc.filled = scaleValue(goal.filled, [0, goal.total], [newArc.start, newArc.end]);
-+      // newArc.filled = scaleValue(goal.filled, [0, goal.total], [newArc.start, newArc.end]);
-       return newArc;
-     });
-     setArcs(newArcs);
++  var renderWhiteCircle = function renderWhiteCircle(angle, value) {
++    var arc = arcs[arcs.length - 1];
++
++    if (!arc) {
++      return /*#__PURE__*/_react["default"].createElement(_reactNativeSvg.G, null);
++    }
++
++    var pos = polarToCartesian(arc.centerX, arc.centerY, radius, (angle || arc.filled) + 3);
++    var formatedValue = formatValue ? formatValue(value || totalFilledValue) : parseInt(value || totalFilledValue, 10);
++    var boxFinalPosition = {
++      x: formatedValue < 15 ? pos.x - 1 : formatedValue < 25 ? pos.x - 3 : formatedValue < 35 ? pos.x - 6 : formatedValue < 45 ? pos.x - 8 : formatedValue < 75 ? pos.x - 10 : formatedValue < 85 ? pos.x -7 : pos.x - 1,
++      y: formatedValue < 35 ? pos.y + 3 : formatedValue < 45 ? pos.y - 1 : formatedValue < 55 ? pos.y - 3 : formatedValue < 65 ? pos.y - 5 : formatedValue < 75 ? pos.y - 10 : formatedValue < 85 ? pos.y - 11 : pos.y - 11
++    };
++    return /*#__PURE__*/_react["default"].createElement(_reactNativeSvg.Rect, {
++      width: "5",
++      height: "5",
++      fill: 'white',
++      transform: "translate(".concat(boxFinalPosition.x, ",").concat(boxFinalPosition.y, ") rotate(45)"),
++      rx: 5
++    });
++  };
++
+   (0, _react.useEffect)(function () {
+     createArcs();
+   }, [segments, createArcs]);
+@@ -211,6 +233,20 @@ var SegmentedRoundDisplay = function SegmentedRoundDisplay(_ref) {
+     }
+   }, function (props) {
+     return renderDisplayValue(props.x, props.value);
++  })), /*#__PURE__*/_react["default"].createElement(_reactNativeSvg.G, null, !animated && renderDisplayValue(), animated && /*#__PURE__*/_react["default"].createElement(_renderpropsNative.Spring, {
++    from: {
++      x: arcsStart,
++      value: 0
++    },
++    to: {
++      x: arcs[arcs.length - 1].filled,
++      value: totalFilledValue
++    },
++    config: {
++      duration: animationDuration
++    }
++  }, function (props) {
++    return renderWhiteCircle(props.x, props.value);
+   })));
+ };
+ 
 diff --git a/node_modules/react-native-segmented-round-display/src/index.js b/node_modules/react-native-segmented-round-display/src/index.js
-index 3193c52..17be713 100644
+index 3193c52..a8582eb 100644
 --- a/node_modules/react-native-segmented-round-display/src/index.js
 +++ b/node_modules/react-native-segmented-round-display/src/index.js
 @@ -133,84 +133,9 @@ const SegmentedRoundDisplay = ({
@@ -28,7 +69,7 @@ index 3193c52..17be713 100644
 -            strokeLinecap="round"
 -            d={drawArc(arc.centerX, arc.centerY, radius, arc.start, arc.end)}
 -          />
-      
+ 
 -          {animated && arc.filled > arc.start && (
 -            <Spring
 -              from={{ x: arc.start, y: 0 }}
@@ -81,7 +122,7 @@ index 3193c52..17be713 100644
 -          )}
 -        </G>
 -      ))}
-       
+ 
 -      {displayValue && (
 -        <G>
 -          {!animated && renderDisplayValue()}
