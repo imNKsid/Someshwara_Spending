@@ -157,7 +157,7 @@ export default Dashboard;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#dcdae0", //COLORS.bgColor,
+    backgroundColor: COLORS.bgColor,
   },
   mainContent: {
     marginVertical: 80,
