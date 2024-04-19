@@ -1,11 +1,11 @@
 import { StyleSheet, View } from "react-native";
 import React from "react";
-import { Dashboard } from "./src/screens";
+import AppNavigator from "./src/navigation/AppNavigator";
 
 const App = () => {
   return (
     <View style={styles.container}>
-      <Dashboard />
+      <AppNavigator />
     </View>
   );
 };
