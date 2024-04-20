@@ -9,14 +9,14 @@ const AppNavigator = () => {
   return (
     <NavigationContainer>
       <Stack.Navigator
-        initialRouteName="Home"
+        initialRouteName="Login"
         screenOptions={() => ({
           headerShown: false,
           gestureEnabled: false,
         })}
       >
-        <Stack.Screen name="Home" component={Dashboard} />
         <Stack.Screen name="Login" component={Login} />
+        <Stack.Screen name="Home" component={Dashboard} />
         <Stack.Screen name="SpendingLimit" component={SpendingLimit} />
       </Stack.Navigator>
     </NavigationContainer>
