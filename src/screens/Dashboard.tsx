@@ -75,20 +75,6 @@ const Dashboard = () => {
     }, [totalSpent])
   );
 
-  // Changing the values when the totalSpent changes in Edit screen
-  useEffect(() => {
-    const per = ((totalSpent / totalBudget) * 100).toFixed();
-    setPercentage(per);
-
-    const arcTotal = (totalBudget / totalBudget) * 100;
-    setTotalArc(arcTotal);
-    const arcFilled = (totalSpent / totalBudget) * 100;
-    setFilledArc(arcFilled);
-
-    setSpendLimit(totalBudget);
-    setAmountSpent(totalSpent);
-  }, [totalSpent]);
-
   const handleEdit = () => {
     navigation.navigate("SpendingLimit");
   };
