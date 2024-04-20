@@ -16,4 +16,6 @@ export const IMAGES = {
   back: require("./back.png"),
   noData: require("./noData.png"),
   edit: require("./edit.png"),
+  eye: require("./eye.png"),
+  eyeOff: require("./eyeOff.png"),
 };
