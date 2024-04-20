@@ -1,4 +1,11 @@
-import { ImageBackground, Image, StyleSheet, Text, View } from "react-native";
+import {
+  ImageBackground,
+  Image,
+  StyleSheet,
+  Text,
+  View,
+  TouchableOpacity,
+} from "react-native";
 import React from "react";
 import { ProgressCircle } from "react-native-svg-charts";
 
@@ -8,9 +15,10 @@ const Category = ({
   categoryImg,
   barColor,
   text,
+  onClick,
 }: any) => {
   return (
-    <View style={styles.iconNname}>
+    <TouchableOpacity style={styles.iconNname} onPress={() => onClick(text)}>
       <View style={styles.progressBar}>
         <ProgressCircle
           style={{ height: 60, top: -10 }}
@@ -28,7 +36,7 @@ const Category = ({
         </ImageBackground>
       </View>
       <Text style={styles.categoryText}>{text}</Text>
-    </View>
+    </TouchableOpacity>
   );
 };
 

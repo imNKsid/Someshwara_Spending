@@ -5,7 +5,7 @@ import { COLORS } from "../constants";
 import Category from "./Category";
 import SpendSelector from "../redux/ducks/spend/spend-selector";
 
-const AllCategories = () => {
+const AllCategories = ({ handleCategorySelected }: any) => {
   const categoryBudget = SpendSelector.categorySpendBudget();
   const clothSpent = SpendSelector.clothSpent();
   const grocerySpent = SpendSelector.grocerySpent();
@@ -70,6 +70,7 @@ const AllCategories = () => {
             categoryImg={category.categoryImg}
             barColor={category.barColor}
             text={category.text}
+            onClick={handleCategorySelected}
           />
         ))}
       </View>
@@ -82,6 +83,7 @@ const AllCategories = () => {
             categoryImg={category.categoryImg}
             barColor={category.barColor}
             text={category.text}
+            onClick={handleCategorySelected}
           />
         ))}
       </View>

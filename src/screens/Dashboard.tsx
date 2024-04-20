@@ -6,13 +6,15 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { COLORS } from "../constants";
 import { IMAGES } from "../assets/images";
 import SegmentedRoundDisplay from "react-native-segmented-round-display";
 import { AllCategories } from "../components";
-import { useNavigation } from "@react-navigation/native";
+import { useFocusEffect, useNavigation } from "@react-navigation/native";
 import SpendSelector from "../redux/ducks/spend/spend-selector";
+import { dispatch } from "../redux/store/store";
+import SpendThunk from "../redux/ducks/spend/spend-thunk";
 
 const monthNames = [
   "January",
@@ -34,10 +36,58 @@ const Dashboard = () => {
 
   const totalBudget = SpendSelector.spendingBudget();
   const totalSpent = SpendSelector.totalSpent();
+  const categoryBudget = SpendSelector.categorySpendBudget();
+  const clothSpent = SpendSelector.clothSpent();
+  const grocerySpent = SpendSelector.grocerySpent();
+  const healthSpent = SpendSelector.healthSpent();
+  const foodSpent = SpendSelector.foodSpent();
+  const houseSpent = SpendSelector.houseSpent();
+  const beautySpent = SpendSelector.beautySpent();
 
   const [selectedMonthIndex, setSelectedMonthIndex] = useState(
     new Date().getMonth()
   );
+  const [totalArc, setTotalArc] = useState((totalBudget / totalBudget) * 100);
+  const [filledArc, setFilledArc] = useState((totalSpent / totalBudget) * 100);
+  const [centerText, setCenterText] = useState("Total Spendings");
+  const [percentage, setPercentage] = useState(
+    ((totalSpent / totalBudget) * 100).toFixed()
+  );
+  const [spendLimit, setSpendLimit] = useState(totalBudget);
+  const [amountSpent, setAmountSpent] = useState(totalSpent);
+  const [arcColor, setArcColor] = useState(COLORS.green);
+
+  //Resetting everything on navigation change
+  useFocusEffect(
+    React.useCallback(() => {
+      const per = ((totalSpent / totalBudget) * 100).toFixed();
+      setPercentage(per);
+
+      const arcTotal = (totalBudget / totalBudget) * 100;
+      setTotalArc(arcTotal);
+      const arcFilled = (totalSpent / totalBudget) * 100;
+      setFilledArc(arcFilled);
+
+      setSpendLimit(totalBudget);
+      setAmountSpent(totalSpent);
+      setArcColor(COLORS.green);
+      setCenterText("Total Spendings");
+    }, [])
+  );
+
+  // Changing the values when the totalSpent changes in Edit screen
+  useEffect(() => {
+    const per = ((totalSpent / totalBudget) * 100).toFixed();
+    setPercentage(per);
+
+    const arcTotal = (totalBudget / totalBudget) * 100;
+    setTotalArc(arcTotal);
+    const arcFilled = (totalSpent / totalBudget) * 100;
+    setFilledArc(arcFilled);
+
+    setSpendLimit(totalBudget);
+    setAmountSpent(totalSpent);
+  }, [totalSpent, totalBudget]);
 
   const handleEdit = () => {
     navigation.navigate("SpendingLimit");
@@ -60,16 +110,76 @@ const Dashboard = () => {
 
   const selectedMonth = monthNames[selectedMonthIndex];
 
-  console.log("totalSpent =>", totalSpent);
+  const handleCategorySelected = (title: string) => {
+    setCenterText(title);
 
-  const percentage = ((totalSpent / totalBudget) * 100).toFixed();
+    const arcTotal = (categoryBudget / categoryBudget) * 100;
+    setTotalArc(arcTotal);
+    let per = "",
+      arcFilled = 0,
+      spentAmt = 0,
+      color = COLORS.green;
+
+    switch (title) {
+      case "Beauty":
+        arcFilled = (beautySpent / categoryBudget) * 100;
+        per = arcFilled.toFixed();
+        spentAmt = beautySpent;
+        color = COLORS.lightBlue;
+        break;
+      case "Clothing":
+        arcFilled = (clothSpent / categoryBudget) * 100;
+        per = arcFilled.toFixed();
+        spentAmt = clothSpent;
+        color = COLORS.yellow;
+        break;
+      case "Groceries":
+        arcFilled = (grocerySpent / categoryBudget) * 100;
+        per = arcFilled.toFixed();
+        spentAmt = grocerySpent;
+        color = COLORS.darkBlue;
+        break;
+      case "Health & Fitness":
+        arcFilled = (healthSpent / categoryBudget) * 100;
+        per = arcFilled.toFixed();
+        spentAmt = healthSpent;
+        color = COLORS.orange;
+        break;
+      case "Food":
+        arcFilled = (foodSpent / categoryBudget) * 100;
+        per = arcFilled.toFixed();
+        spentAmt = foodSpent;
+        color = COLORS.blue;
+        break;
+      case "Housing":
+        arcFilled = (houseSpent / categoryBudget) * 100;
+        per = arcFilled.toFixed();
+        spentAmt = houseSpent;
+        color = COLORS.magenta;
+        break;
+      default:
+        break;
+    }
+    setPercentage(per);
+    setFilledArc(arcFilled);
+    setSpendLimit(categoryBudget);
+    setAmountSpent(spentAmt);
+    setArcColor(color);
+  };
 
   return (
     <View style={styles.container}>
       <View style={styles.mainContent}>
         <View style={styles.textContainer}>
-          <Text>Spending Dashboard</Text>
-          <Text style={styles.logoutText}>Logout</Text>
+          <Text style={styles.text}>Spending Dashboard</Text>
+          <TouchableOpacity
+            onPress={() => {
+              dispatch<any>(SpendThunk.logout());
+              navigation.navigate("Login");
+            }}
+          >
+            <Text style={[styles.logoutText, styles.text]}>Logout</Text>
+          </TouchableOpacity>
         </View>
         <View style={styles.summaryContainer}>
           <View style={styles.textContainer}>
@@ -101,34 +211,34 @@ const Dashboard = () => {
                 <SegmentedRoundDisplay
                   segments={[
                     {
-                      total: (totalBudget / totalBudget) * 100,
-                      filled: (totalSpent / totalBudget) * 100,
+                      total: totalArc,
+                      filled: filledArc,
                     },
                   ]}
                   totalArcSize={180}
                   radius={140}
                   emptyArcColor={COLORS.bgColor}
-                  incompleteArcColor={COLORS.green}
+                  incompleteArcColor={arcColor}
                   filledArcWidth={10}
                   emptyArcWidth={10}
                 />
               </View>
               <View style={styles.numNspendings}>
                 <Text style={styles.percent}>{`${percentage}%`}</Text>
-                <Text style={styles.totalText}>Total Spendings</Text>
+                <Text style={styles.totalText}>{centerText}</Text>
               </View>
               <View style={styles.endsText}>
                 <View style={styles.spendLimit}>
                   <Text style={styles.spentText}>Spending Limit</Text>
-                  <Text style={styles.priceText}>{`AED ${totalBudget}`}</Text>
+                  <Text style={styles.priceText}>{`AED ${spendLimit}`}</Text>
                 </View>
                 <View style={styles.divider} />
                 <View style={[styles.spendLimit, styles.amountSpent]}>
                   <Text style={styles.spentText}>Amount Spent</Text>
-                  <Text style={styles.priceText}>{`AED ${totalSpent}`}</Text>
+                  <Text style={styles.priceText}>{`AED ${amountSpent}`}</Text>
                 </View>
               </View>
-              <AllCategories />
+              <AllCategories handleCategorySelected={handleCategorySelected} />
             </View>
           ) : (
             <View>
@@ -194,6 +304,7 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     alignItems: "center",
   },
+  text: { color: COLORS.black, fontSize: 16 },
   logoutText: { marginRight: 10 },
   summaryContainer: {
     backgroundColor: COLORS.white,
@@ -209,7 +320,8 @@ const styles = StyleSheet.create({
     position: "absolute",
     top: 100,
     alignItems: "center",
-    left: 115,
+    alignSelf: "center",
+    // left: 115,
   },
   percent: { fontSize: 30 },
   totalText: { fontSize: 18 },
@@ -245,5 +357,15 @@ const styles = StyleSheet.create({
     fontWeight: "300",
     textAlign: "center",
     marginHorizontal: 10,
+  },
+
+  categoriesList: {
+    marginTop: -100,
+  },
+  categoryRow: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    marginHorizontal: 10,
+    marginBottom: 20,
   },
 });
