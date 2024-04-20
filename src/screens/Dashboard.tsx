@@ -72,7 +72,7 @@ const Dashboard = () => {
       setAmountSpent(totalSpent);
       setArcColor(COLORS.green);
       setCenterText("Total Spendings");
-    }, [])
+    }, [totalSpent])
   );
 
   // Changing the values when the totalSpent changes in Edit screen
@@ -87,7 +87,7 @@ const Dashboard = () => {
 
     setSpendLimit(totalBudget);
     setAmountSpent(totalSpent);
-  }, [totalSpent, totalBudget]);
+  }, [totalSpent]);
 
   const handleEdit = () => {
     navigation.navigate("SpendingLimit");
