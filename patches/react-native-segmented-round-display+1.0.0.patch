@@ -1,0 +1,143 @@
+diff --git a/node_modules/react-native-segmented-round-display/index.js b/node_modules/react-native-segmented-round-display/index.js
+index 291f9b3..63fdc4b 100644
+--- a/node_modules/react-native-segmented-round-display/index.js
++++ b/node_modules/react-native-segmented-round-display/index.js
+@@ -148,6 +148,28 @@ var SegmentedRoundDisplay = function SegmentedRoundDisplay(_ref) {
+     }, formatedValue));
+   };
+ 
++  var renderWhiteCircle = function renderWhiteCircle(angle, value) {
++    var arc = arcs[arcs.length - 1];
++
++    if (!arc) {
++      return /*#__PURE__*/_react["default"].createElement(_reactNativeSvg.G, null);
++    }
++
++    var pos = polarToCartesian(arc.centerX, arc.centerY, radius, (angle || arc.filled) + 3);
++    var formatedValue = formatValue ? formatValue(value || totalFilledValue) : parseInt(value || totalFilledValue, 10);
++    var boxFinalPosition = {
++      x: formatedValue < 15 ? pos.x - 1 : formatedValue < 25 ? pos.x - 3 : formatedValue < 35 ? pos.x - 6 : formatedValue < 45 ? pos.x - 8 : formatedValue < 75 ? pos.x - 10 : formatedValue < 85 ? pos.x -7 : pos.x - 1,
++      y: formatedValue < 35 ? pos.y + 3 : formatedValue < 45 ? pos.y - 1 : formatedValue < 55 ? pos.y - 3 : formatedValue < 65 ? pos.y - 5 : formatedValue < 75 ? pos.y - 10 : formatedValue < 85 ? pos.y - 11 : pos.y - 11
++    };
++    return /*#__PURE__*/_react["default"].createElement(_reactNativeSvg.Rect, {
++      width: "5",
++      height: "5",
++      fill: 'white',
++      transform: "translate(".concat(boxFinalPosition.x, ",").concat(boxFinalPosition.y, ") rotate(45)"),
++      rx: 5
++    });
++  };
++
+   (0, _react.useEffect)(function () {
+     createArcs();
+   }, [segments, createArcs]);
+@@ -211,6 +233,20 @@ var SegmentedRoundDisplay = function SegmentedRoundDisplay(_ref) {
+     }
+   }, function (props) {
+     return renderDisplayValue(props.x, props.value);
++  })), /*#__PURE__*/_react["default"].createElement(_reactNativeSvg.G, null, !animated && renderDisplayValue(), animated && /*#__PURE__*/_react["default"].createElement(_renderpropsNative.Spring, {
++    from: {
++      x: arcsStart,
++      value: 0
++    },
++    to: {
++      x: arcs[arcs.length - 1].filled,
++      value: totalFilledValue
++    },
++    config: {
++      duration: animationDuration
++    }
++  }, function (props) {
++    return renderWhiteCircle(props.x, props.value);
+   })));
+ };
+ 
+diff --git a/node_modules/react-native-segmented-round-display/src/index.js b/node_modules/react-native-segmented-round-display/src/index.js
+index 3193c52..a8582eb 100644
+--- a/node_modules/react-native-segmented-round-display/src/index.js
++++ b/node_modules/react-native-segmented-round-display/src/index.js
+@@ -133,84 +133,9 @@ const SegmentedRoundDisplay = ({
+ 
+   return (
+     <Svg width={svgWidth} height={svgHeight} style={style}>
+-      {arcs.map((arc, index) => (
+-        <G key={index.toString()}>
+-          <Path
+-            fill="none"
+-            stroke={emptyArcColor}
+-            strokeWidth={emptyArcWidth}
+-            strokeLinecap="round"
+-            d={drawArc(arc.centerX, arc.centerY, radius, arc.start, arc.end)}
+-          />
+ 
+-          {animated && arc.filled > arc.start && (
+-            <Spring
+-              from={{ x: arc.start, y: 0 }}
+-              to={{ x: arc.filled + 0.6, y: filledArcWidth }}
+-              config={{
+-                duration: animationDuration / totalArcs,
+-                delay: (animationDuration / totalArcs) * index,
+-              }}
+-            >
+-              {(props) => (
+-                <Path
+-                  fill="none"
+-                  stroke={
+-                    arc.isComplete
+-                      ? filledArcColor
+-                      : incompleteArcColor || filledArcColor
+-                  }
+-                  strokeWidth={props.y}
+-                  strokeLinecap="round"
+-                  d={drawArc(
+-                    arc.centerX,
+-                    arc.centerY,
+-                    radius,
+-                    arc.start,
+-                    props.x
+-                  )}
+-                />
+-              )}
+-            </Spring>
+-          )}
+ 
+-          {!animated && arc.filled > arc.start && (
+-            <Path
+-              fill="none"
+-              stroke={
+-                arc.isComplete
+-                  ? filledArcColor
+-                  : incompleteArcColor || filledArcColor
+-              }
+-              strokeWidth={filledArcWidth}
+-              strokeLinecap="round"
+-              d={drawArc(
+-                arc.centerX,
+-                arc.centerY,
+-                radius,
+-                arc.start,
+-                arc.filled
+-              )}
+-            />
+-          )}
+-        </G>
+-      ))}
+ 
+-      {displayValue && (
+-        <G>
+-          {!animated && renderDisplayValue()}
+-
+-          {animated && (
+-            <Spring
+-              from={{ x: arcsStart, value: 0 }}
+-              to={{ x: arcs[arcs.length - 1].filled, value: totalFilledValue }}
+-              config={{ duration: animationDuration }}
+-            >
+-              {(props) => renderDisplayValue(props.x, props.value)}
+-            </Spring>
+-          )}
+-        </G>
+-      )}
+     </Svg>
+   );
+ };

@@ -1,0 +1,18 @@
+export const COLORS = {
+  bgColor: "#DCDAE0",
+  black: "#1D1D2C",
+  white: "#FFF",
+  green: "#35C937",
+  yellow: "#DABB4F",
+  yellowFade: "#fcf0c0",
+  darkBlue: "#5281AC",
+  darkBlueFade: "#b9dafa",
+  orange: "#EE9E38",
+  orangeFade: "#fae6cd",
+  blue: "#76A6D3",
+  blueFade: "#cae3fa",
+  magenta: "#DFA1A7",
+  magentaFade: "#fcebed",
+  lightBlue: "#5ACCD1",
+  lightBlueFade: "#cffcff",
+};
