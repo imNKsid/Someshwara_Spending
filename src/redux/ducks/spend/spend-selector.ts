@@ -1,6 +1,11 @@
 import { useSelector } from "react-redux";
 import { RootState } from "../../store/store";
 
+const isLoggedIn = (): any => {
+  const isLoggedIn = useSelector((state: RootState) => state.spend.isLoggedIn);
+  return isLoggedIn;
+};
+
 const spendingBudget = (): any => {
   const spendingBudget = useSelector(
     (state: RootState) => state.spend.spendingBudget
@@ -58,6 +63,7 @@ const houseSpent = (): any => {
 };
 
 const SpendSelector = {
+  isLoggedIn,
   spendingBudget,
   totalSpent,
   categorySpendBudget,
