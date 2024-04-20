@@ -31,6 +31,15 @@ const SpendSlice = createSlice({
       .addCase(SpendThunk.logout.fulfilled, (state, action) => {
         state.isLoggedIn = false;
         state.emailId = "";
+        state.spendingBudget = 30000;
+        state.totalSpent = 1000 + 3000 + 4000 + 3500 + 2000 + 1500;
+        state.categorySpendBudget = 5000;
+        state.grocerySpent = 1000;
+        state.clothSpent = 3000;
+        state.beautySpent = 4000;
+        state.healthSpent = 3500;
+        state.foodSpent = 2000;
+        state.houseSpent = 1500;
       })
       .addCase(SpendThunk.changeSpent.fulfilled, (state, action) => {
         const { title, price } = action.payload as any;
